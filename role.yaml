@@ -1,0 +1,466 @@
+project_description: |
+  🧑‍🏫 Teacher Personal LMS (Single Instructor)
+  This project is a personal LMS tailored for one Egyptian teacher who provides online courses.
+  It is NOT a SaaS platform like Udemy — it is custom-built for one educator to:
+
+  - Upload and organize video lessons
+  - Track student progress and submissions
+  - Grade quizzes and assignments
+  - Communicate with students
+  - Collect payments (Stripe, Fawry, Vodafone Cash)
+  - Automate repetitive tasks like notifications and grading
+
+  🏠 1. Dashboard Overview
+  - Total number of students
+  - Active students today
+  - This month's revenue
+  - Recent submissions (latest 5)
+  - Low-performing students (auto-detected)
+  - Quick announcement sender
+
+  📚 2. Courses & Lectures
+  - Courses: title, description, thumbnail, tags (grade, term), price
+  - Lectures: video (upload or YouTube), description, PDFs/images
+  - Link quizzes/assignments to lectures
+  ✅ Want:
+  - Drag-and-drop lecture reordering
+  - Split lecture into parts (e.g., Part 1, Q&A)
+  - Auto-suggest titles based on past content
+
+  📤 3. Assignments
+  - Can be linked to lectures or standalone
+  - Supports file + text-based answers
+  - Deadlines + optional blocking logic (must submit to continue)
+  ✅ Want:
+  - Auto-check for cheating (similarity)
+  - Optional AI grading (bonus)
+  - Detect late submissions
+  - Allow/disallow resubmissions
+
+  🧠 4. Quiz System
+  - Manual question entry (MCQ, open-ended, true/false)
+  - Tag by topic/difficulty/lesson
+  ✅ Want:
+  - Auto-generate quizzes from a topic
+  - Weekly practice test generator
+  - Prevent retake on repeated failures
+
+  🎓 5. Student Management
+  - Each student: name, email, phone, grade
+  - Track: enrolled courses, progress, quiz/assignment history
+  - Private teacher notes
+  ✅ Want:
+  - Filter/search students
+  - Export to Excel
+  - Flag VIPs or students needing attention
+
+  📩 6. Communication & Alerts
+  - Send bulk emails/messages to:
+    - All students
+    - Students in a course
+    - Students with missing submissions
+  ✅ Want:
+  - Email templates: assignment graded, new lecture, payment due
+  - Auto-send alerts on:
+    - New lecture posted
+    - Assignment graded
+    - Subscription expiring
+    - Failing performance
+
+  💰 7. Payments & Subscriptions
+  - Course options: free, one-time, or recurring
+  - Integrate: Stripe, Fawry, Vodafone Cash
+  - Admin can mark payment as "Paid" manually
+  ✅ Want:
+  - View transaction history
+  - Block access on expiry
+  - Notify on payment failures
+
+  👥 8. Assistants & Roles
+  - Add co-teachers or helpers
+  - Roles: editor, grader, view-only
+
+  🎥 9. File Storage
+  - Upload videos (MP4), PDFs, images
+  - Use blob storage (Supabase, Firebase, S3)
+  - Compress + stream videos
+  - Video preview before publishing
+  - File size limits per upload
+
+  📊 10. Analytics
+  - Course completion % per student
+  - Quiz performance heatmaps
+  - Most-watched lectures
+  - Weekly/monthly retention
+  ✅ Want:
+  - Dashboard widgets
+  - Report export to Excel
+
+  ⚙️ Automation Features
+  - Auto-grade MCQs
+  - Auto-email results
+  - Auto-detect cheating
+  - Auto-subscription expiry warnings
+  - Auto-reminders for missing submissions
+
+  🧱 Backend Core
+  - Auth: email/password, optional social
+  - Roles: admin (teacher), assistant, student
+  - PostgreSQL or MongoDB
+  - File storage: Supabase, S3, or Firebase
+  - Email: SendGrid, Resend, or SMTP
+  - Background jobs: grading, reminders, etc.
+
+  💡 Bonus (Optional)
+  - AI quiz/question generation from lecture text
+  - Live attendance tracker
+  - Chat with students
+  - Plagiarism detection
+  - Future mobile app (student-focused)
+
+student_functional_requirements:
+  - "🔐 1. Authentication & Profile"
+  - "Register with email and password (if registration is open)."
+  - "Log in securely using email/password."
+  - "View and edit personal profile (name, email, phone number, grade)."
+  - "Change password."
+  - "📚 2. Course Access & Learning"
+  - "View list of available courses (free/paid)."
+  - "Enroll in free or paid courses (based on teacher's settings)."
+  - "View enrolled courses with:"
+  - "  - Course progress tracker (% complete)."
+  - "  - Access to lecture videos."
+  - "  - View/download lecture attachments (PDFs, images, etc.)."
+  - "  - Navigate between lectures, parts (e.g., Part 1, Q&A)."
+  - "  - Blocked next lecture if previous assignment/quiz is required."
+  - "🎥 3. Lecture Player"
+  - "Stream video content."
+  - "Resume playback from where left off."
+  - "Download attachments."
+  - "View teacher notes or description."
+  - "📤 4. Assignments"
+  - "View list of assignments per course or lecture."
+  - "Upload assignment files (PDF, Word, images)."
+  - "Add text/comment with submission."
+  - "View submission status: Pending, Graded, Rejected, Late."
+  - "View feedback/grades from the teacher."
+  - "Re-submit if allowed."
+  - "🧠 5. Quizzes & Practice Tests"
+  - "Take quizzes linked to lectures or courses."
+  - "Answer different question types (MCQ, true/false, short answer)."
+  - "Get instant result (if enabled)."
+  - "View past quiz scores and feedback."
+  - "Retake quiz if allowed."
+  - "🧾 6. Progress Tracking"
+  - "Dashboard showing:"
+  - "  - Enrolled courses"
+  - "  - Overall completion %"
+  - "  - Assignments due/overdue"
+  - "  - Quiz performance"
+  - "Alerts on pending tasks or low performance."
+  - "📩 7. Notifications & Communication"
+  - "Receive notifications for:"
+  - "  - New lectures"
+  - "  - Assignment deadlines"
+  - "  - Graded assignments/quizzes"
+  - "  - Subscription/payment updates"
+  - "View notification history."
+  - "Receive bulk announcements from teacher."
+  - "Optional: contact teacher via message (if enabled)."
+  - "💳 8. Payments & Subscriptions"
+  - "View pricing for courses."
+  - "Pay using Stripe, Fawry, or Vodafone Cash."
+  - "View payment status (paid, pending, expired)."
+  - "Renew monthly subscription (if applicable)."
+  - "Get blocked if payment expires."
+
+teacher_functional_requirements:
+  - "📚 1. Course Management"
+  - "Create new courses (title, description, syllabus, media)"
+  - "Edit course content (update videos, lectures, notes, quizzes)"
+  - "Delete/archive courses"
+  - "Set course visibility (public/private/unlisted)"
+  - "Schedule course availability"
+  - "📝 2. Lesson & Content Authoring"
+  - "Upload lecture videos or documents"
+  - "Create modules or units (group lessons)"
+  - "Add resources (PDFs, slides, links)"
+  - "Embed external tools or media (YouTube, CodeSandbox, etc.)"
+  - "📋 3. Assignment & Quiz Management"
+  - "Create assignments with deadlines and instructions"
+  - "Upload starter code or supporting material"
+  - "Build quizzes (MCQs, True/False, etc.)"
+  - "Set time limits, attempt limits, grading rules"
+  - "View submissions and grades"
+  - "📊 4. Grading & Feedback"
+  - "Grade submissions manually or with rubric"
+  - "Add comments or annotations to student work"
+  - "Track grading status"
+  - "Download/export grades (CSV, Excel)"
+  - "👥 5. Student Monitoring"
+  - "View enrolled students"
+  - "Track student activity (minutes watched, quiz attempts, completion %)"
+  - "Identify inactive or struggling students"
+  - "Send messages or reminders"
+  - "💬 6. Communication"
+  - "Post announcements to course"
+  - "Open discussion forums"
+  - "Answer student questions"
+  - "Enable/disable commenting per lesson"
+  - "📈 7. Analytics"
+  - "View stats per course (enrollment, engagement, avg. scores)"
+  - "Identify drop-off points in lessons"
+  - "Filter analytics by time range, cohort, etc."
+  - "⚙️ 8. Settings & Roles"
+  - "Assign co-teachers or assistants"
+  - "Customize course landing page"
+  - "Control access (invite-only, require approval, etc.)"
+
+tech_stack:
+  - name: Next.js
+    version: "15.3.4"
+  - name: NestJS
+    version: "11.0.1"
+  - name: React
+    version: "19.0.0"
+  - name: TypeScript
+    version: "5.7.3"
+  - name: TailwindCSS
+    version: "4"
+  - name: Zustand
+    version: "5.0.5"
+  - name: Zod
+    version: "3.25.67"
+  - name: React Hook Form
+    version: "7.58.1"
+  - name: Radix UI
+    version: "Latest"
+  - name: Lucide React
+    version: "0.523.0"
+  - name: Next Intl
+    version: "4.3.1"
+
+goals:
+  - Simplify everything for one teacher, not SaaS
+  - Automate wherever possible (grading, reminders)
+  - Centralized and clean admin UX
+  - Single-deployment and maintainable
+  - Reusable UI across student/admin roles
+
+patterns:
+  - Use Zod for form/data validation
+  - Zustand for client-side state
+  - REST API via NestJS (modular structure)
+  - Absolute imports (`@/` alias)
+  - Use React Server Components when beneficial
+  - Component-based architecture with shared UI components
+
+architecture_roles:
+  frontend:
+    location: "client/"
+    description: "Next.js App Router frontend using TailwindCSS for a responsive LMS (admin + student panels)"
+    folder_structure:
+      - path: "src/app/"
+        purpose: "App Router structure: pages, layouts, loading states, etc."
+      - path: "src/components/"
+        purpose: "UI components shared across routes. Subfolders mirror route structure."
+        example: "Component used in 'src/app/dashboard/page.tsx' → 'src/components/dashboard/'"
+      - path: "src/stores/"
+        purpose: "Zustand stores for client state (e.g. course creation, UI toggles)"
+      - path: "src/lib/"
+        purpose: "Utility functions (e.g. date formatter, API client)"
+      - path: "src/validation/"
+        purpose: "Zod schemas for form validation and type safety"
+      - path: "src/services/"
+        purpose: "API services and external integrations"
+      - path: "src/hooks/"
+        purpose: "Custom React hooks (useDebounce, useSearch, etc.)"
+
+  backend:
+    location: "server/"
+    description: "NestJS REST backend for handling authentication, grading, storage, quiz logic, etc."
+    folder_structure:
+      - path: "src/modules/"
+        purpose: "Main domain logic grouped by feature (e.g. users, courses, grading)"
+      - path: "src/common/"
+        purpose: "Guards, interceptors, pipes, and common utils"
+      - path: "src/jobs/"
+        purpose: "Background jobs (auto-grading, email, cleanups)"
+      - path: "src/config/"
+        purpose: "Environment variables and Nest global setup"
+
+  shared:
+    location: "packages/"
+    description: "Shared utilities and types used by both backend and frontend"
+    folder_structure:
+      - path: "packages/types/"
+        purpose: "Zod schemas, shared TS types"
+      - path: "packages/utils/"
+        purpose: "Generic helpers (slugify, validatePhone, formatDate)"
+
+current_project_structure:
+  root:
+    - "client/" - Next.js frontend application
+    - "server/" - NestJS backend application
+    - "role.yaml" - Project documentation and requirements
+  client_structure:
+    src:
+      app:
+        auth/ - Authentication pages (login, register, forgot password)
+        student/ - Student dashboard and learning interface
+        teacher/ - Teacher dashboard and course management
+        courses/ - Public course browsing and enrollment
+        page.tsx - Landing page
+        layout.tsx - Root layout
+        globals.css - Global styles
+      components:
+        ui/ - Reusable UI components (shadcn/ui)
+        custom/ - Custom branded components (Logo, Container, etc.)
+        student/ - Student-specific components (CourseCard, RecentAssignments, etc.)
+        teacher/ - Teacher-specific components (course creation, management)
+        dashboard/ - Shared dashboard components
+        home/ - Landing page components
+        auth/ - Authentication components
+      assets/ - Static assets (images, icons)
+      hooks/ - Custom React hooks (useDebounce, useSearch, etc.)
+      lib/ - Utility functions
+      services/ - API services and external integrations
+      stores/ - Zustand stores for state management
+      validation/ - Zod schemas for form validation
+  server_structure:
+    src:
+      app.controller.ts - Basic controller
+      app.service.ts - Basic service
+      app.module.ts - Root module
+      main.ts - Application entry point
+      # Modules structure to be developed based on requirements
+
+implementation_status:
+  frontend:
+    completed:
+      - "✅ Next.js 15 setup with App Router"
+      - "✅ TailwindCSS v4 configuration"
+      - "✅ Shadcn/ui component library"
+      - "✅ Student dashboard with mock data"
+      - "✅ Teacher dashboard overview"
+      - "✅ Course creation wizard (5-step process)"
+      - "✅ Form validation with Zod"
+      - "✅ State management with Zustand"
+      - "✅ Responsive design system"
+      - "✅ File upload components"
+      - "✅ Video content handling (file + YouTube)"
+      - "✅ Quiz creation interface"
+      - "✅ Assignment creation interface"
+      - "✅ Course preview functionality"
+      - "✅ Multi-step form navigation"
+      - "✅ Internationalization setup (next-intl)"
+    in_progress:
+      - "🔄 Teacher course management interface"
+      - "🔄 Student course enrollment flow"
+      - "🔄 Authentication system"
+      - "🔄 File upload integration"
+    pending:
+      - "⏳ Payment integration"
+      - "⏳ Real-time notifications"
+      - "⏳ Analytics dashboard"
+      - "⏳ Student progress tracking"
+      - "⏳ Assignment submission system"
+      - "⏳ Quiz taking interface"
+      - "⏳ Communication system"
+
+  backend:
+    completed:
+      - "✅ Basic NestJS setup"
+      - "✅ TypeScript configuration"
+      - "✅ ESLint and Prettier setup"
+    in_progress:
+      - "🔄 API structure planning"
+      - "🔄 Database schema design"
+    pending:
+      - "⏳ Authentication module"
+      - "⏳ Course management APIs"
+      - "⏳ File upload service"
+      - "⏳ User management"
+      - "⏳ Assignment/Quiz APIs"
+      - "⏳ Payment integration"
+      - "⏳ Email service"
+      - "⏳ Background jobs"
+
+development_priorities:
+  phase_1:
+    - "✅ Complete student dashboard functionality"
+    - "✅ Implement teacher authentication"
+    - "✅ Create basic teacher dashboard"
+    - "🔄 Set up database schema"
+    - "🔄 Implement course creation backend"
+  phase_2:
+    - "🔄 Course management system"
+    - "🔄 Content authoring tools"
+    - "🔄 Assignment and quiz creation"
+    - "🔄 File upload system"
+  phase_3:
+    - "⏳ Grading and feedback system"
+    - "⏳ Student monitoring"
+    - "⏳ Analytics dashboard"
+    - "⏳ Payment integration"
+  phase_4:
+    - "⏳ Advanced features"
+    - "⏳ Mobile optimization"
+    - "⏳ Performance optimization"
+    - "⏳ Testing and deployment"
+
+key_features_implemented:
+  course_creation:
+    - "5-step wizard interface"
+    - "Course information form"
+    - "Lesson management with video uploads"
+    - "Quiz creation with multiple question types"
+    - "Assignment creation with deadlines"
+    - "Course settings and visibility"
+    - "Live course preview"
+    - "File upload handling"
+    - "YouTube video integration"
+    - "Form validation with Zod"
+    - "State management with Zustand"
+
+  student_dashboard:
+    - "Welcome section with user info"
+    - "Course progress tracking"
+    - "Recent assignments overview"
+    - "Quick actions menu"
+    - "Stats overview"
+    - "Responsive design"
+
+  teacher_dashboard:
+    - "Overview statistics"
+    - "Recent activity feed"
+    - "Quick actions"
+    - "Course management access"
+
+  ui_components:
+    - "Complete shadcn/ui setup"
+    - "Custom branded components"
+    - "Responsive navigation"
+    - "Form components with validation"
+    - "File upload components"
+    - "Video player components"
+    - "Progress indicators"
+    - "Modal dialogs and sheets"
+
+next_steps:
+  immediate:
+    - "Connect frontend to backend APIs"
+    - "Implement authentication system"
+    - "Set up database and ORM"
+    - "Complete file upload functionality"
+    - "Build student course enrollment flow"
+  short_term:
+    - "Implement assignment submission system"
+    - "Create quiz taking interface"
+    - "Add real-time notifications"
+    - "Set up payment processing"
+  long_term:
+    - "Add analytics and reporting"
+    - "Implement AI features"
+    - "Mobile app development"
+    - "Performance optimization"

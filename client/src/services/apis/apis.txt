@@ -1,0 +1,331 @@
+# Course Creation APIs - Complete List
+# Base URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+
+## ============================================================================
+## COURSE MANAGEMENT APIs
+## ============================================================================
+
+### Create Course
+- **POST** `/api/courses`
+- **Purpose**: Create a new course with all steps data
+- **Body**: FormData (includes files + JSON data)
+- **Response**: CourseResponse
+
+### Update Course
+- **PUT** `/api/courses/:id`
+- **Purpose**: Update existing course
+- **Body**: FormData
+- **Response**: CourseResponse
+
+### Get Course
+- **GET** `/api/courses/:id`
+- **Purpose**: Fetch course details
+- **Response**: CourseResponse
+
+### Get Teacher Courses
+- **GET** `/api/teacher/courses`
+- **Purpose**: List all courses by teacher
+- **Response**: Array<CourseResponse>
+
+### Delete Course
+- **DELETE** `/api/courses/:id`
+- **Purpose**: Delete course
+- **Response**: ApiResponse
+
+## ============================================================================
+## FILE UPLOAD APIs
+## ============================================================================
+
+### Upload Course Thumbnail
+- **POST** `/api/upload/thumbnail`
+- **Purpose**: Upload course thumbnail image
+- **Body**: FormData with 'thumbnail' file
+- **Response**: UploadResponse
+
+### Upload Lesson Video
+- **POST** `/api/upload/video`
+- **Purpose**: Upload video for lesson
+- **Body**: FormData with 'video' file + 'lessonId'
+- **Response**: UploadResponse
+
+### Upload Lesson Resources
+- **POST** `/api/upload/resources`
+- **Purpose**: Upload multiple resources for lesson
+- **Body**: FormData with multiple 'resources' files + 'lessonId'
+- **Response**: Array<UploadResponse>
+
+### Upload Assignment PDF Template
+- **POST** `/api/upload/assignment-template`
+- **Purpose**: Upload PDF template for assignment
+- **Body**: FormData with 'template' file + 'assignmentId'
+- **Response**: UploadResponse
+
+### Upload Quiz File
+- **POST** `/api/upload/quiz-file`
+- **Purpose**: Upload file for quiz creation (PDF, DOC, etc.)
+- **Body**: FormData with 'quizFile'
+- **Response**: UploadResponse
+
+### Get Upload Progress
+- **GET** `/api/upload/progress/:uploadId`
+- **Purpose**: Track file upload progress
+- **Response**: { progress: number, status: string }
+
+## ============================================================================
+## AI INTEGRATION APIs
+## ============================================================================
+
+### Generate Quiz Questions
+- **POST** `/api/ai/generate-quiz`
+- **Purpose**: Generate quiz questions from content
+- **Body**: {
+  content: string,
+  questionCount: number,
+  difficulty: 'easy' | 'medium' | 'hard',
+  questionTypes: ('mcq' | 'true_false' | 'short_answer')[]
+}
+- **Response**: { questions: Question[] }
+
+### Extract Questions from File
+- **POST** `/api/ai/extract-questions`
+- **Purpose**: Extract questions from uploaded file
+- **Body**: { fileId: string }
+- **Response**: { questions: Question[] }
+
+### Process Video
+- **POST** `/api/ai/process-video`
+- **Purpose**: Generate transcript and analyze video
+- **Body**: { videoId: string }
+- **Response**: { transcript: string, duration: number, segments: any[] }
+
+### Split Video
+- **POST** `/api/ai/split-video`
+- **Purpose**: Split video into segments
+- **Body**: { videoId: string, segments: number }
+- **Response**: { segments: VideoSegment[] }
+
+## ============================================================================
+## TIMELINE MANAGEMENT APIs
+## ============================================================================
+
+### Create Timeline
+- **POST** `/api/courses/:id/timeline`
+- **Purpose**: Create course timeline with scheduled items
+- **Body**: {
+  timelineEnabled: boolean,
+  items: TimelineItem[]
+}
+- **Response**: { timeline: Timeline }
+
+### Update Timeline Item
+- **PUT** `/api/courses/:id/timeline/:itemId`
+- **Purpose**: Update specific timeline item
+- **Body**: Partial<TimelineItem>
+- **Response**: { item: TimelineItem }
+
+### Delete Timeline Item
+- **DELETE** `/api/courses/:id/timeline/:itemId`
+- **Purpose**: Remove item from timeline
+- **Response**: ApiResponse
+
+## ============================================================================
+## CO-TEACHER MANAGEMENT APIs
+## ============================================================================
+
+### Create Co-Teacher Invite
+- **POST** `/api/courses/:id/invite`
+- **Purpose**: Generate invite link for co-teacher
+- **Response**: { inviteId: string, inviteUrl: string }
+
+### Get Course Invites
+- **GET** `/api/courses/:id/invites`
+- **Purpose**: List all invite links for course
+- **Response**: Array<InviteLink>
+
+### Revoke Invite
+- **DELETE** `/api/courses/:id/invite/:inviteId`
+- **Purpose**: Revoke specific invite link
+- **Response**: ApiResponse
+
+### Accept Co-Teacher Invite
+- **POST** `/api/invite/:inviteId/accept`
+- **Purpose**: Accept co-teacher invitation
+- **Response**: { success: boolean, courseId: string }
+
+## ============================================================================
+## UTILITY APIs
+## ============================================================================
+
+### Get Categories
+- **GET** `/api/categories`
+- **Purpose**: Get available course categories
+- **Response**: Array<Category>
+
+### Validate YouTube URL
+- **POST** `/api/validate/youtube`
+- **Purpose**: Validate YouTube video URL
+- **Body**: { url: string }
+- **Response**: { valid: boolean, videoId?: string, title?: string }
+
+## ============================================================================
+## DATA TYPES
+## ============================================================================
+
+### Course
+```typescript
+{
+  id: string
+  title: string
+  description: string
+  category: string
+  thumbnail?: string
+  price: number // EGP
+  visibility: 'public' | 'private' | 'unlisted'
+  lessons: Lesson[]
+  quizzes: Quiz[]
+  assignments: Assignment[]
+  coTeachers: string[]
+  timelineEnabled: boolean
+  createdAt: string
+  updatedAt: string
+}
+```
+
+### Lesson
+```typescript
+{
+  id: string
+  title: string
+  video?: VideoContent
+  resources: Resource[]
+  order: number
+}
+```
+
+### Quiz
+```typescript
+{
+  id: string
+  title: string
+  type: 'auto' | 'manual'
+  questions: Question[]
+  timeLimit?: number
+  attempts: number
+  autoCorrect: boolean
+}
+```
+
+### Assignment
+```typescript
+{
+  id: string
+  title: string
+  description: string
+  deadline: Date
+  allowLateSubmission: boolean
+  maxScore: number
+  attachments: Resource[]
+  requiresPDFSubmission: boolean
+  pdfTemplate?: File
+}
+```
+
+### TimelineItem
+```typescript
+{
+  id: string
+  type: 'assignment' | 'quiz'
+  title: string
+  lessonId: string
+  scheduledDate: Date
+  isEnabled: boolean
+}
+```
+
+### VideoContent
+```typescript
+{
+  type: 'file' | 'youtube'
+  file?: FileUpload
+  youtubeUrl?: string
+  duration?: number
+  thumbnail?: string
+}
+```
+
+### Resource
+```typescript
+{
+  id: string
+  name: string
+  type: 'file' | 'url'
+  file?: FileUpload
+  url?: string
+  description?: string
+}
+```
+
+### FileUpload
+```typescript
+{
+  id: string
+  name: string
+  size: number
+  type: string
+  url?: string
+  progress?: number
+  status?: 'pending' | 'uploading' | 'completed' | 'error'
+  error?: string
+}
+```
+
+## ============================================================================
+## ERROR RESPONSES
+## ============================================================================
+
+### Standard Error Response
+```typescript
+{
+  success: false
+  error: string
+  message?: string
+  code?: string
+}
+```
+
+### Validation Error Response
+```typescript
+{
+  success: false
+  errors: Array<{
+    field: string
+    message: string
+  }>
+}
+```
+
+## ============================================================================
+## AUTHENTICATION
+## ============================================================================
+
+All APIs require authentication via:
+- **Header**: `Authorization: Bearer <token>`
+- **Cookie**: `auth-token=<token>`
+
+## ============================================================================
+## FILE UPLOAD LIMITS
+## ============================================================================
+
+- **Thumbnail**: 5MB, JPG/PNG/WEBP
+- **Video**: 500MB, MP4/AVI/MOV
+- **Resources**: 50MB per file, PDF/DOC/PPT/Images
+- **Quiz Files**: 10MB, PDF/DOC/TXT
+
+## ============================================================================
+## RATE LIMITS
+## ============================================================================
+
+- **General APIs**: 100 requests/minute
+- **File Uploads**: 10 uploads/minute
+- **AI APIs**: 5 requests/minute
+- **Timeline APIs**: 50 requests/minute 

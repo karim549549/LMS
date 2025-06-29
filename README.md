@@ -221,4 +221,4 @@ For questions or support, please contact the project maintainer.
 
 **Last Updated**: January 2025
 **Status**: Active Development
-**Version**: 0.1.0 # LMS
+**Version**: 0.1.0 
