@@ -352,4 +352,9 @@ tmp/
 # OS files
 .DS_Store
 Thumbs.db
-Desktop.ini 
+Desktop.ini
+
+# Project-specific ignores
+railway.toml
+types.yaml
+types-implementation.md 
