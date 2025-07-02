@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Languages } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const languages = [
@@ -14,25 +13,22 @@ export default function LanguageToggle() {
   const [value, setValue] = useState("en");
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="flex items-center gap-2"
+    <div
+      className="flex items-center gap-1"
     >
-      <Languages className="w-5 h-5 text-gray-500" />
+      <Languages className="w-4 h-4 text-gray-500" />
       <Select value={value} onValueChange={setValue}>
-        <SelectTrigger className={cn("w-28")}> 
+        <SelectTrigger className={cn("w-20 h-7 px-2 py-1 text-xs")}> 
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {languages.map((lang) => (
-            <SelectItem key={lang.code} value={lang.code}>
+            <SelectItem key={lang.code} value={lang.code} className="text-xs px-2 py-1">
               {lang.label}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-    </motion.div>
+    </div>
   );
 } 

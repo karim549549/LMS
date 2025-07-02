@@ -1,0 +1,568 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id           String   @id @map("_id") @default(uuid())
+  name         String
+  email        String   @unique
+  hashPassword String
+  role         ROLE     @default(USER)
+  
+  // Profile information
+  phone        String?
+  parentPhone  String? // Only for students
+  isEmailVerified      Boolean @default(false)
+  isPhoneVerified      Boolean @default(false)
+  isParentPhoneVerified Boolean @default(false) // Only for students
+  grade        String?  // For students
+  avatar       String?  // Profile picture URL
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+  
+  // Relations
+  // Teacher relations
+  createdCourses    Course[]        @relation("CourseCreator")
+  courseAssistants CourseAssistant[]
+  
+  // Student relations
+  enrollments       Enrollment[]
+  submissions       AssignmentSubmission[]
+  quizAttempts      QuizAttempt[]
+  progress          LessonProgress[]
+  
+  // Communication
+  sentMessages      Message[]       @relation("MessageSender")
+  receivedMessages  Message[]       @relation("MessageReceiver")
+  notifications     Notification[]
+  
+  // Payment
+  payments          Payment[]
+  
+  @@map("users")
+}
+
+enum ROLE {
+  TEACHER
+  USER
+  ADMIN
+  ASSISTANT
+}
+
+// ============================================================================
+// COURSE MANAGEMENT
+// ============================================================================
+
+model Course {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  description String
+  grade       String // e.g., "3rd Secondary", required
+  thumbnail   String?  // Image URL
+  price       Float    @default(0)
+  visibility  VISIBILITY @default(PRIVATE)
+  
+  // Course settings
+  timelineEnabled Boolean @default(false)
+  allowEnrollment Boolean @default(true)
+  maxStudents     Int?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  
+  // Relations
+  creator     User     @relation("CourseCreator", fields: [creatorId], references: [id])
+  creatorId   String
+  
+  courseAssistants CourseAssistant[]
+  enrollments Enrollment[]
+  lessons     Lesson[]
+  quizzes     Quiz[]
+  assignments Assignment[]
+  announcements Announcement[]
+  
+  @@map("courses")
+}
+
+enum VISIBILITY {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+// ============================================================================
+// MANY-TO-MANY RELATIONS FOR MONGODB
+// ============================================================================
+
+// Remove CourseTeacher model
+// Add CourseAssistant join table
+model CourseAssistant {
+  id          String   @id @map("_id") @default(uuid())
+  courseId    String
+  assistantId String
+  permissions String[] // e.g., ["GRADE_ASSIGNMENTS", "VIEW_ANALYTICS"]
+  assignedAt  DateTime @default(now())
+  
+  // Relations
+  course      Course   @relation(fields: [courseId], references: [id])
+  assistant   User     @relation(fields: [assistantId], references: [id])
+  
+  @@unique([courseId, assistantId])
+  @@map("course_assistants")
+}
+
+// ============================================================================
+// LESSON MANAGEMENT
+// ============================================================================
+
+model Lesson {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  description String?
+  order       Int      // For ordering lessons in course
+  duration    Int?     // Duration in seconds
+  
+  // Video content
+  videoType   VIDEO_TYPE?
+  videoUrl    String?  // YouTube URL or file URL
+  videoFile   String?  // Uploaded file URL
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  resources   Resource[]
+  progress    LessonProgress[]
+  
+  @@map("lessons")
+}
+
+enum VIDEO_TYPE {
+  FILE
+  YOUTUBE
+}
+
+// ============================================================================
+// RESOURCES
+// ============================================================================
+
+model Resource {
+  id          String   @id @map("_id") @default(uuid())
+  name        String
+  type        RESOURCE_TYPE
+  url         String?  // For external resources
+  fileUrl     String?  // For uploaded files
+  description String?
+  size        Int?     // File size in bytes
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String
+  
+  @@map("resources")
+}
+
+enum RESOURCE_TYPE {
+  PDF
+  IMAGE
+  DOCUMENT
+  LINK
+  AUDIO
+}
+
+// ============================================================================
+// QUIZ SYSTEM
+// ============================================================================
+
+model Quiz {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  description String?
+  type        QUIZ_TYPE @default(MANUAL)
+  
+  // Quiz settings
+  timeLimit   Int?     // Time limit in minutes
+  maxAttempts Int      @default(1)
+  autoCorrect Boolean  @default(true)
+  isActive    Boolean  @default(true)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  questions   Question[]
+  attempts    QuizAttempt[]
+  
+  @@map("quizzes")
+}
+
+enum QUIZ_TYPE {
+  MANUAL
+  AUTO
+}
+
+model Question {
+  id            String        @id @map("_id") @default(uuid())
+  text          String
+  type          QUESTION_TYPE
+  options       String[]      // For MCQ questions
+  correctAnswer String
+  points        Int           @default(1)
+  order         Int           // Question order in quiz
+  
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  
+  // Relations
+  quiz          Quiz          @relation(fields: [quizId], references: [id])
+  quizId        String
+  
+  answers       QuestionAnswer[]
+  
+  @@map("questions")
+}
+
+enum QUESTION_TYPE {
+  MCQ
+  TRUE_FALSE
+  SHORT_ANSWER
+}
+
+// ============================================================================
+// ASSIGNMENT SYSTEM
+// ============================================================================
+
+model Assignment {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  description String
+  
+  // Assignment settings
+  deadline    DateTime
+  maxScore    Int
+  allowLateSubmission Boolean @default(false)
+  requiresPDFSubmission Boolean @default(false)
+  pdfTemplate String?  // Template file URL
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  submissions AssignmentSubmission[]
+  attachments AssignmentAttachment[]
+  
+  @@map("assignments")
+}
+
+model AssignmentAttachment {
+  id          String   @id @map("_id") @default(uuid())
+  name        String
+  type        RESOURCE_TYPE
+  url         String
+  size        Int?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  assignment  Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId String
+  
+  @@map("assignment_attachments")
+}
+
+// ============================================================================
+// ENROLLMENT & PROGRESS
+// ============================================================================
+
+model Enrollment {
+  id          String   @id @map("_id") @default(uuid())
+  status      ENROLLMENT_STATUS @default(ACTIVE)
+  
+  // Progress tracking
+  progress    Float    @default(0) // Percentage completed
+  lastAccessed DateTime?
+  
+  // Timestamps
+  enrolledAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  student     User     @relation(fields: [studentId], references: [id])
+  studentId   String
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  lessonProgress LessonProgress[]
+  
+  @@unique([studentId, courseId])
+  @@map("enrollments")
+}
+
+enum ENROLLMENT_STATUS {
+  ACTIVE
+  COMPLETED
+  DROPPED
+  SUSPENDED
+}
+
+model LessonProgress {
+  id          String   @id @map("_id") @default(uuid())
+  completed   Boolean  @default(false)
+  watchedTime Int      @default(0) // Seconds watched
+  lastWatched DateTime?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  student     User     @relation(fields: [studentId], references: [id])
+  studentId   String
+  
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String
+  
+  enrollment  Enrollment @relation(fields: [enrollmentId], references: [id])
+  enrollmentId String
+  
+  @@unique([studentId, lessonId])
+  @@map("lesson_progress")
+}
+
+// ============================================================================
+// SUBMISSIONS & GRADING
+// ============================================================================
+
+model AssignmentSubmission {
+  id          String   @id @map("_id") @default(uuid())
+  content     String?  // Text submission
+  score       Float?
+  feedback    String?
+  status      SUBMISSION_STATUS @default(PENDING)
+  submittedAt DateTime @default(now())
+  gradedAt    DateTime?
+  
+  // Relations
+  student     User     @relation(fields: [studentId], references: [id])
+  studentId   String
+  
+  assignment  Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId String
+  
+  files      SubmissionFile[]
+  
+  @@map("assignment_submissions")
+}
+
+enum SUBMISSION_STATUS {
+  PENDING
+  GRADED
+  REJECTED
+  LATE
+}
+
+model SubmissionFile {
+  id          String   @id @map("_id") @default(uuid())
+  name        String
+  url         String
+  type        String
+  size        Int
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  submission  AssignmentSubmission @relation(fields: [submissionId], references: [id])
+  submissionId String
+  
+  @@map("submission_files")
+}
+
+model QuizAttempt {
+  id          String   @id @map("_id") @default(uuid())
+  score       Float?
+  timeSpent   Int?     // Time spent in seconds
+  completed   Boolean  @default(false)
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  
+  // Relations
+  student     User     @relation(fields: [studentId], references: [id])
+  studentId   String
+  
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+  quizId      String
+  
+  answers     QuestionAnswer[]
+  
+  @@map("quiz_attempts")
+}
+
+model QuestionAnswer {
+  id          String   @id @map("_id") @default(uuid())
+  answer      String
+  isCorrect   Boolean?
+  points      Float?
+  
+  // Timestamps
+  answeredAt  DateTime @default(now())
+  
+  // Relations
+  question    Question @relation(fields: [questionId], references: [id])
+  questionId  String
+  
+  attempt     QuizAttempt @relation(fields: [attemptId], references: [id])
+  attemptId   String
+  
+  @@map("question_answers")
+}
+
+// ============================================================================
+// COMMUNICATION
+// ============================================================================
+
+model Message {
+  id          String   @id @map("_id") @default(uuid())
+  content     String
+  read        Boolean  @default(false)
+  
+  // Timestamps
+  sentAt      DateTime @default(now())
+  readAt      DateTime?
+  
+  // Relations
+  sender      User     @relation("MessageSender", fields: [senderId], references: [id])
+  senderId    String
+  
+  receiver    User     @relation("MessageReceiver", fields: [receiverId], references: [id])
+  receiverId  String
+  
+  @@map("messages")
+}
+
+model Announcement {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  content     String
+  priority    PRIORITY @default(NORMAL)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  @@map("announcements")
+}
+
+enum PRIORITY {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model Notification {
+  id          String   @id @map("_id") @default(uuid())
+  title       String
+  message     String
+  type        NOTIFICATION_TYPE
+  read        Boolean  @default(false)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  @@map("notifications")
+}
+
+enum NOTIFICATION_TYPE {
+  COURSE_ENROLLMENT
+  ASSIGNMENT_DUE
+  QUIZ_GRADED
+  ANNOUNCEMENT
+  PAYMENT
+  SYSTEM
+}
+
+// ============================================================================
+// PAYMENT SYSTEM
+// ============================================================================
+
+model Payment {
+  id          String   @id @map("_id") @default(uuid())
+  amount      Float
+  currency    String   @default("EGP")
+  method      PAYMENT_METHOD
+  status      PAYMENT_STATUS @default(PENDING)
+  transactionId String?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  paidAt      DateTime?
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  @@map("payments")
+}
+
+enum PAYMENT_METHOD {
+  STRIPE
+  FAWRY
+  VODAFONE_CASH
+  MANUAL
+}
+
+enum PAYMENT_STATUS {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}

@@ -239,6 +239,10 @@ tech_stack:
     version: "0.523.0"
   - name: Next Intl
     version: "4.3.1"
+  - name: Prisma
+    version: "Latest"
+  - name: MongoDB
+    version: "Latest"
 
 goals:
   - Simplify everything for one teacher, not SaaS
@@ -248,12 +252,49 @@ goals:
   - Reusable UI across student/admin roles
 
 patterns:
-  - Use Zod for form/data validation
-  - Zustand for client-side state
-  - REST API via NestJS (modular structure)
-  - Absolute imports (`@/` alias)
-  - Use React Server Components when beneficial
-  - Component-based architecture with shared UI components
+  - "Frontend Validation: Use Zod for all form and data validation on the client-side."
+  - "Backend Validation: Use `class-validator` and DTOs for all incoming API request validation."
+  - "State Management: Use Zustand for client-side state."
+  - "API Style: REST API via NestJS (modular structure)."
+  - "Imports: Use absolute imports (`@/` alias) in the frontend."
+  - "Rendering: Use React Server Components (RSC) when beneficial."
+  - "Component-based architecture with shared UI components"
+
+backend_architecture_patterns:
+  title: "Backend Architecture & Patterns"
+  description: "The backend follows a modular, repository-based architecture to ensure separation of concerns, testability, and maintainability."
+  
+  core_principles:
+    - name: "Vertical Slicing"
+      description: "Each feature (e.g., 'user', 'auth', 'course') is organized into its own module folder. All related files—controller, service, repository, DTOs, and types—are co-located within that module's folder."
+
+    - name: "Repository Pattern"
+      description: "Data access logic is strictly encapsulated within a Repository class (e.g., `UserRepo`). Repositories are the only components that directly interact with Prisma. They explicitly define data views to select only necessary fields, preventing data leakage."
+
+    - name: "Service Layer"
+      description: "Services act as a facade over repositories. They contain business logic and are the public API of a module. Other modules should only ever consume Services, never Repositories directly."
+
+    - name: "DTOs and Validation"
+      description: "All data transfer between the client and server is handled through Data Transfer Objects (DTOs). These are `class-validator` decorated classes that automatically validate incoming request bodies, params, and queries."
+
+  dependency_injection_flow:
+    - "1. `PrismaModule`: Provides the `PrismaService` (which encapsulates the `PrismaClient`) to the application."
+    - "2. `Feature Module` (e.g., `UserModule`): Imports `PrismaModule`."
+    - "3. `Repository` (e.g., `UserRepo`): Injects `PrismaService` to access the database."
+    - "4. `Service` (e.g., `UserService`): Injects its corresponding `Repository` (e.g., `UserRepo`)."
+    - "5. `Controller` (e.g., `UserController`): Injects its corresponding `Service` (e.g., `UserService`)."
+
+  folder_structure_example:
+    module: "user/"
+    files:
+      - "user.module.ts"
+      - "user.controller.ts"
+      - "user.service.ts"
+      - "user.repo.ts"
+      - "user.type.ts"
+      - "dtos/"
+        - "create-user.dto.ts"
+        - "update-user.dto.ts"
 
 architecture_roles:
   frontend:
@@ -373,11 +414,11 @@ implementation_status:
       - "✅ Basic NestJS setup"
       - "✅ TypeScript configuration"
       - "✅ ESLint and Prettier setup"
+      - "✅ Database schema design (Prisma + MongoDB)"
     in_progress:
       - "🔄 API structure planning"
-      - "🔄 Database schema design"
+      - "🔄 Authentication module development"
     pending:
-      - "⏳ Authentication module"
       - "⏳ Course management APIs"
       - "⏳ File upload service"
       - "⏳ User management"
@@ -391,7 +432,7 @@ development_priorities:
     - "✅ Complete student dashboard functionality"
     - "✅ Implement teacher authentication"
     - "✅ Create basic teacher dashboard"
-    - "🔄 Set up database schema"
+    - "✅ Set up database schema"
     - "🔄 Implement course creation backend"
   phase_2:
     - "🔄 Course management system"

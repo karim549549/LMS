@@ -1,8 +1,6 @@
 import React from "react";
-import Image from "next/image";
-import authLanding from "@/assets/authlanding.jpg";
-import LanguageToggle from "@/components/custom/LanguageToggle";
 import Logo from "@/components/custom/Logo";
+import LanguageToggle from "@/components/custom/LanguageToggle";
 import Link from "next/link";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -11,30 +9,28 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <header className="w-full py-4 bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto flex items-center justify-between px-6">
           <Logo />
-          <LanguageToggle />
+          <div className="flex items-center gap-2">
+            <Link
+              href='/auth/register'
+              className="px-4 py-1 rounded-md font-semibold text-xs border border-blue-300 transition-all duration-200 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 hover:from-blue-500 hover:to-purple-500 hover:text-white hover:border-blue-500 focus:outline-none"
+            >
+              Register
+            </Link>
+            <Link
+              href='/auth/login'
+              className="px-4 py-1 rounded-md font-semibold text-xs border border-pink-300 transition-all duration-200 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 hover:from-pink-500 hover:to-purple-500 hover:text-white hover:border-pink-500 focus:outline-none"
+            >
+              Sign In
+            </Link>
+            <hr className="mx-1 h-9 w-[1px] border-1 " />
+            <LanguageToggle />
+            
+          </div>
         </nav>
       </header>
- 
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <div className="w-full max-w-7xl flex flex-col md:flex-row items-center justify-center gap-0">
-          <div className="flex-shrink-0 max-w-xl w-full flex flex-col justify-center p-8">
-            {children}
-          </div>
-          <div className="hidden md:block relative flex-1 min-h-[400px]">
-            <Image
-              src={authLanding}
-              alt="Authentication visual"
-              fill
-              className="object-cover"
-              sizes="(min-width: 768px) 50vw, 100vw"
-              priority
-            />
-          </div>
-        </div>
-      </div>
-      <footer className="flex border-t-1 items-center p-2 w-full text-center align-center justify-center">
-        <p className="text-sm text-gray-500">don &apos;t have an account? <Link href="/auth/register" className="text-blue-500 hover:text-blue-600">Sign  up </Link></p>
-      </footer>
+      <main className="flex-1 flex flex-col items-center justify-center">
+        {children}
+      </main>
     </section>
   );
 } 
