@@ -120,7 +120,7 @@
   --brand-secondary: oklch(0.268 0.007 34.298); /* Example dark secondary */
   --brand-accent: oklch(0.627 0.265 303.9); /* Example dark accent */
   --brand-radius: 0.625rem;
-  --brand-font: 'Inter', 'Geist', 'sans-serif';
+  --brand-font: "Inter", "Geist", "sans-serif";
   --brand-logo-url: "/logo-dark.svg";
 }
 
@@ -134,9 +134,13 @@
 }
 
 @keyframes fadein {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .animate-fadein {
-  animation: fadein 1.2s cubic-bezier(0.4,0,0.2,1) 0.1s both;
+  animation: fadein 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }

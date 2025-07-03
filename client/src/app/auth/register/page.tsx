@@ -20,7 +20,6 @@ import { ROLE } from "@/types/user/user.types";
 export default function RegisterPage() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [showAllErrors, setShowAllErrors] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
   const router = useRouter();
 
@@ -70,14 +69,6 @@ export default function RegisterPage() {
       }
     }
   };
-
-  const handleGoogleSignUp = async () => {
-    setGoogleLoading(true);
-    await new Promise((res) => setTimeout(res, 1200));
-    setGoogleLoading(false);
-    // TODO: Integrate real Google sign-up
-  };
-
   return (
     <motion.div
       className="w-full flex items-center justify-center min-h-[60vh]"
@@ -157,9 +148,7 @@ export default function RegisterPage() {
           <span className="mx-4 text-gray-400 text-xs font-medium">OR</span>
           <div className="flex-1 h-px bg-gray-200" />
         </div>
-        <GoogleButton loading={googleLoading} onClick={handleGoogleSignUp} disabled={registerLoading}>
-          {googleLoading ? "Signing up..." : "Sign up with Google"}
-        </GoogleButton>
+        <GoogleButton/>
       </div>
     </motion.div>
   );

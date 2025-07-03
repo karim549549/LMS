@@ -2,20 +2,25 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
 
-interface GoogleButtonProps {
-  loading: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-  disabled?: boolean;
-}
 
-export default function GoogleButton({ loading, onClick, children, disabled }: GoogleButtonProps) {
+export default function GoogleButton() {
+  const [loading, setLoading] = React.useState(false);
+
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      await new Promise((res) => setTimeout(res, 1200));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <button
       type="button"
-      className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 font-semibold hover:bg-gray-50 transition-all duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-      onClick={onClick}
-      disabled={loading || disabled}
+      className="w-full cursor-pointer tranition-all  flex items-center justify-center gap-2 border border-sky-300 rounded-md py-2 font-semibold bg-gradient-to-r  hover:from-blue-500  hover:to-blue-700   text-xs  hover:text-white transition-all duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+      onClick={handleClick}
+      disabled={loading}
     >
       {loading ? (
         <Loader2 className="animate-spin w-4 h-4" />
@@ -34,7 +39,7 @@ export default function GoogleButton({ loading, onClick, children, disabled }: G
           </defs>
         </svg>
       )}
-      <span>{children}</span>
+      <span>{loading ? "Signing in..." : "Sign in with Google"}</span>
     </button>
   );
-} 
+}
