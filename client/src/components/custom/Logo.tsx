@@ -6,7 +6,7 @@ export default function Logo() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2 group cursor-pointer select-none"
+      className="flex items-center gap-2 group cursor-pointer select-none italic"
       aria-label="LMS Home"
     >
       <GraduationCap className='text-sky-500'  />
