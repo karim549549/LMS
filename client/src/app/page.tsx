@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gray-50">
       <PageTransition>
-              {/* NavBar */}
+        {/* NavBar */}
         <nav className="w-full bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-30">
           <Container className="flex items-center justify-between h-16">
             {/* Logo/Brand */}
