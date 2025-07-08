@@ -44,6 +44,41 @@
   --brand-primary: var(--brand-primary);
   --brand-secondary: var(--brand-secondary);
   --brand-accent: var(--brand-accent);
+
+
+      /* Loading Screen Colors */
+      --loading-background: 240 7% 7%; /* zinc-950 equivalent */
+      --neon-cyan: 187 100% 68%;
+      --neon-purple: 269 91% 73%;
+      --neon-blue: 214 100% 73%;
+      --aurora-start: 269 91% 73%;
+      --aurora-middle: 187 100% 68%;
+      --aurora-end: 214 100% 73%;
+  
+      /* Loading Gradients */
+      --gradient-aurora: radial-gradient(ellipse 80% 50% at 50% 40%, 
+                        hsl(var(--aurora-start) / 0.15), 
+                        transparent 70%),
+                        radial-gradient(ellipse 60% 40% at 80% 60%, 
+                        hsl(var(--aurora-middle) / 0.1), 
+                        transparent 70%),
+                        radial-gradient(ellipse 50% 30% at 20% 80%, 
+                        hsl(var(--aurora-end) / 0.08), 
+                        transparent 70%);
+      
+      --gradient-logo: linear-gradient(135deg, 
+                       hsl(var(--neon-cyan)), 
+                       hsl(var(--neon-purple)));
+      
+      --gradient-text: linear-gradient(90deg, 
+                       hsl(var(--neon-cyan)), 
+                       hsl(var(--neon-blue)), 
+                       hsl(var(--neon-purple)));
+  
+      /* Shadows & Glows */
+      --glow-cyan: 0 0 30px hsl(var(--neon-cyan) / 0.3);
+      --glow-purple: 0 0 40px hsl(var(--neon-purple) / 0.2);
+      --glow-text: 0 0 20px hsl(var(--neon-cyan) / 0.4);
 }
 
 :root {

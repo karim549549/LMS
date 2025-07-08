@@ -5,16 +5,20 @@ import { motion } from "framer-motion";
 import GoogleButton from "@/components/auth/GoogleButton";
 import authLanding from "@/assets/authlanding.jpg";
 import Container from "@/components/custom/Container";
-import Logo from "@/components/custom/Logo";
 import LoginForm from "@/components/auth/login/LoginForm";
 import Link from "next/link";
-import { ChevronsDown } from "lucide-react";
+import { ChevronsDown, GraduationCap } from "lucide-react";
 import  Image  from  'next/image';
+import Placeholder1  from '@/assets/placeholder1.jpg'
+import Placeholder2 from '@/assets/placeholder2.jpg'
+import Placeholder3 from '@/assets/placeholder3.jpg'
 export default function LoginPage() {
   return (
-    <section className="min-h-screen flex flex-col bg-gray-50">
-      <Container className="flex-1 flex flex-col justify-center items-center ">
+    <section className="min-h-screen flex flex-col bg-gray-50 relative">
+      <div className="absolute w-full h-full bg-pink-500/10 z-10 " />
+      <Container className="flex-1 flex flex-col justify-center items-center  z-50">
         {/* Card */}
+
         <motion.div
           className="w-full max-w-5xl p-5 bg-white border-2 rounded-lg shadow-xl flex flex-col gap-5"
           initial={{ opacity: 0, y: 40 }}
@@ -22,7 +26,12 @@ export default function LoginPage() {
           transition={{ duration: 0.6 }}
         >
           <div className="flex w-full  items-center p-5 justify-between">
-            <Logo />
+            <div className="flex items-center gap-2 p-2">
+              <GraduationCap  className="text-cyan-500" />
+              <h6 className="italic font-bold text-xl bg-gradient-to-r  from-neutral-400  to-neutral-950 text-transparent bg-clip-text">
+                LMS
+              </h6>
+            </div>
             <div className="flex items-center gap-3">
               <p className="italic max-w-50 text-gray-500 text-xs">
                 &quot; the product is superfast , reliable and robust with great
@@ -32,7 +41,7 @@ export default function LoginPage() {
               <div className="flex -space-x-4 ">
                 <span className="inline-block    w-9 h-9 transition-all duration-200 rounded-full ring-2 ring-white overflow-hidden border border-gray-200 bg-pink-100">
                   <Image
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    src={Placeholder1}
                     alt="User 1"
                     width={36}
                     height={36}
@@ -41,7 +50,7 @@ export default function LoginPage() {
                 </span>
                 <span className="inline-block  w-9 h-9 transition-all duration-200 rounded-full ring-2 ring-white overflow-hidden border border-gray-200 bg-gray-100">
                   <Image
-                    src="https://randomuser.me/api/portraits/women/44.jpg"
+                    src={Placeholder2}
                     alt="User 2"
                     width={36}
                     height={36}
@@ -50,7 +59,7 @@ export default function LoginPage() {
                 </span>
                 <span className="inline-block  w-9 h-9 transition-all duration-200 rounded-full ring-2 ring-white overflow-hidden border border-gray-200 bg-yellow-100">
                   <Image
-                    src="https://randomuser.me/api/portraits/women/68.jpg"
+                    src={Placeholder3}
                     alt="User 3"
                     width={36}
                     height={36}
@@ -61,21 +70,8 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between  ">
-            <div className="flex-1 md:basis-1/2  flex flex-col justify-center p-4 gap-4 min-w-[260px]">
+            <div className="flex-1 md:basis-1/3  flex flex-col justify-center p-4 gap-4 min-w-[260px]">
               {/* Title and description inside card */}
-              <section className="mb-7 text-start">
-                <header className="mb-4">
-                  <h1 className="text-2xl font-bold  drop-shadow-sm bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    Start now,
-                  </h1>
-                  <p className="text-base text-neutral-500 font-medium">
-                    What are you waiting for!?
-                  </p>
-                </header>
-                <p className="text-gray-500 text-sm leading-tight">
-                  Enter your email and password to access your dashboard. If you forgot your password, use the link below to reset it.
-                </p>
-              </section>
               <LoginForm />
               {/* Divider and Google sign-in */}
               <div className="flex items-center w-full my-2">

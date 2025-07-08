@@ -111,6 +111,9 @@ export default function LoginForm() {
             </>
           )}
         </Button>
+        <p className="text-gray-500 text-center text-xs leading-tight">
+          Enter your email and password to access your dashboard. If you forgot your password, use the link below to reset it.
+        </p>
       </form>
     </>
   );

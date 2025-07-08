@@ -19,9 +19,7 @@ export default function Home() {
       <nav className="w-full bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-30">
         <Container className="flex items-center justify-between h-16">
           {/* Logo/Brand */}
-          <Link href="/" className="flex items-center gap-2" aria-label="Home">
-            <Logo />
-          </Link>
+          <Logo />
           {/* Navigation Links */}
           <div className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
             <Link href="/" className="hover:text-blue-600 transition">Home</Link>
