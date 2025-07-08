@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import GoogleButton from "@/components/auth/GoogleButton";
-import authLanding from "@/assets/authlanding.jpg";
+import authLanding from "@/assets/authlanding.png";
 import Container from "@/components/custom/Container";
 import LoginForm from "@/components/auth/login/LoginForm";
 import Link from "next/link";
@@ -15,17 +15,16 @@ import Placeholder3 from '@/assets/placeholder3.jpg'
 export default function LoginPage() {
   return (
     <section className="min-h-screen flex flex-col bg-gray-50 relative">
-      <div className="absolute w-full h-full bg-pink-500/10 z-10 " />
       <Container className="flex-1 flex flex-col justify-center items-center  z-50">
         {/* Card */}
 
         <motion.div
-          className="w-full max-w-5xl p-5 bg-white border-2 rounded-lg shadow-xl flex flex-col gap-5"
+          className="w-full max-w-5xl p-5 relative logincard before:z-[1] overflow-hidden bg-white border-2 rounded-lg shadow-xl flex flex-col gap-5"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex w-full  items-center p-5 justify-between">
+          <div className="flex w-full  items-center p-5 justify-between z-1">
             <div className="flex items-center gap-2 p-2">
               <GraduationCap  className="text-cyan-500" />
               <h6 className="italic font-bold text-xl bg-gradient-to-r  from-neutral-400  to-neutral-950 text-transparent bg-clip-text">
@@ -69,7 +68,7 @@ export default function LoginPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row justify-between  ">
+          <div className="flex flex-col md:flex-row justify-between z-1 ">
             <div className="flex-1 md:basis-1/3  flex flex-col justify-center p-4 gap-4 min-w-[260px]">
               {/* Title and description inside card */}
               <LoginForm />
@@ -83,7 +82,7 @@ export default function LoginPage() {
               </div>
               <GoogleButton/>
             </div>
-            <div className="flex-1 flex items-center   md:basis-1/2 p-5 relative min-h-[220px] md:min-h-[400px]">
+            <div className="flex-1 flex items-center   md:basis-1/2  p-5 relative min-h-[220px] md:min-h-[400px]">
               <Image
                 src={authLanding}
                 alt="Authentication visual"
@@ -92,7 +91,7 @@ export default function LoginPage() {
               />
             </div>
           </div>
-          <div className="flex items-center p-5 justify-between text-xs group">
+          <div className="flex items-center p-5 justify-between text-xs group z-50">
             <p className="text-sm text-neutral-400">
               Don&apos;t have an account?{" "}
             </p>

@@ -15,8 +15,8 @@ import PageTransition from "@/components/custom/PageTransition";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-gray-50">
-      <PageTransition>
+    <PageTransition>
+      <div className="flex flex-col min-h-screen font-sans bg-gray-50">
         {/* NavBar */}
         <nav className="w-full bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-30">
           <Container className="flex items-center justify-between h-16">
@@ -38,25 +38,25 @@ export default function Home() {
           </Container>
         </nav>
         <HeroSection />
-      </PageTransition>
-      <SocialProofSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <AudienceSection />
-      <DifferentiatorsSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <FAQSection />
-      {/* Footer */}
-      <footer className="w-full py-8 bg-gray-900 text-gray-200 flex flex-col items-center mt-auto">
-        {/* TODO: Add real footer links and branding */}
-        <div className="mb-2">[LMS Name] &copy; {new Date().getFullYear()}</div>
-        <div className="flex gap-6 text-sm opacity-70">
-          <a href="#" className="hover:underline">About</a>
-          <a href="#" className="hover:underline">Docs</a>
-          <a href="#" className="hover:underline">Contact</a>
-        </div>
-      </footer>
-    </div>
+        <SocialProofSection />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <AudienceSection />
+        <DifferentiatorsSection />
+        <TestimonialsSection />
+        <PricingSection />
+        <FAQSection />
+        {/* Footer */}
+        <footer className="w-full py-8 bg-gray-900 text-gray-200 flex flex-col items-center mt-auto">
+          {/* TODO: Add real footer links and branding */}
+          <div className="mb-2">[LMS Name] &copy; {new Date().getFullYear()}</div>
+          <div className="flex gap-6 text-sm opacity-70">
+            <a href="#" className="hover:underline">About</a>
+            <a href="#" className="hover:underline">Docs</a>
+            <a href="#" className="hover:underline">Contact</a>
+          </div>
+        </footer>
+      </div>
+    </PageTransition>
   );
 }

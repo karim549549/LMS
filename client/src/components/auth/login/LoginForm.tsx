@@ -29,7 +29,7 @@ export default function LoginForm() {
             email: "",
             password: "",
           },
-          mode: "onBlur",
+          mode: "onChange",
         });
       
         const errorList = [

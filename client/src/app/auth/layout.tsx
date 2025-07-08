@@ -2,10 +2,12 @@ import React from "react";
 import Logo from "@/components/custom/Logo";
 import LanguageToggle from "@/components/custom/LanguageToggle";
 import Link from "next/link";
+import ScatterIcons from "@/components/custom/ScatterIcons";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="min-h-screen flex flex-col bg-gray-50">
+    <section className="min-h-screen flex flex-col bg-gray-50 relative">
+      <ScatterIcons count={20} />
       <header className="w-full py-4 bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto flex items-center justify-between px-6">
           <Logo />
@@ -28,7 +30,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center">
+      <main className="flex-1 flex flex-col items-center justify-center relative">
+        <ScatterIcons count={50} />
         {children}
       </main>
     </section>
