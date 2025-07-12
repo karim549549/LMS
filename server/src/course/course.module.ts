@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CourseController } from './course.controller';
 import { CourseService } from './course.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { StudentViewRepo } from './repositories/StudentView.repo';
-import { TeacherViewRepo } from './repositories/TeacherView.repo';
-import { StudentCardViewRepo } from './repositories/StudentCardView.repo';
-import { TeacherCardViewRepo } from './repositories/TeacherCardView.repo';
+import { CourseRepository } from './repositories/Course.repo';
+import { TeacherCourseRepository } from './teacher/repositories/teacherCourser.repo';
+import { TeacherCoursesServices } from './teacher/teacherCourse.services';
+import { TeacherCoursesController } from './teacher/teacherCourse.controller';
+
 
 @Module({
-  controllers: [CourseController],
-  providers: [CourseService, PrismaService, StudentViewRepo, TeacherViewRepo, StudentCardViewRepo, TeacherCardViewRepo],
-  exports: [CourseService],
+  controllers: [CourseController , TeacherCoursesController ],
+  providers: [CourseService,CourseRepository , TeacherCourseRepository , TeacherCoursesServices],
+  exports: [CourseService , TeacherCoursesServices],
 })
 export class CourseModule {}

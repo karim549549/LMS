@@ -31,3 +31,10 @@ export interface StudentQueryFilter {
   isPhoneVerified?: boolean;
   isParentPhoneVerified?: boolean;
 }
+
+export enum ROLE {
+  TEACHER = "TEACHER",
+  USER = "USER",
+  ADMIN = "ADMIN",
+  ASSISTANT = "ASSISTANT",
+}

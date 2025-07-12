@@ -40,6 +40,7 @@ export class AuthService {
         id: foundUser.id,
         role: foundUser.role,
         isProfileCompleted,
+        name:foundUser.name
       },
     };
   }
@@ -66,6 +67,7 @@ export class AuthService {
         id: user.id,
         role: user.role,
         isProfileCompleted: false,
+        name:user.name
       },
     };
   }
@@ -86,7 +88,8 @@ export class AuthService {
         email: foundUser.email,
         id: foundUser.id,
         role: foundUser.role,
-        isProfileCompleted
+        isProfileCompleted,
+        name:foundUser.name
       },
     };
   }
@@ -96,8 +99,6 @@ export class AuthService {
     if (!user) throw new BadRequestException('User not found');
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await this.cache.set(`otp:reset:${otp}`, user.email, 21300);
-    console.log(await this.cache.get<string>(`otp:reset:${otp}`)) // 5 min TTL, key is OTP, value is email
-    console.log('[forgetPassword] Set cache:', `otp:reset:${otp}`, '->', user.email);
     await this.emailService.sendEmail({
       to: user.email,
       subject: 'Password Reset Request',

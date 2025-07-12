@@ -7,6 +7,11 @@ import { EmailModule } from './email/email.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CourseModule } from './course/course.module';
 import { BlobModule } from './blob/blob.module';
+import { StudentModule } from './student/student.module';
+import { LessonModule } from './lesson/lesson.module';
+import { AssignmentModule } from './assignment/assignment.module';
+import { QuizModule } from './quiz/quiz.module';
+import { AnnouncementModule } from './announcement/announcement.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -32,6 +37,11 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     CourseModule,
     BlobModule,
+    StudentModule,
+    LessonModule,
+    AssignmentModule,
+    QuizModule,
+    AnnouncementModule,
   ],
 })
 export class AppModule {}

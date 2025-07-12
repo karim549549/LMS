@@ -33,6 +33,11 @@ model User {
   grade        String?  // For students
   avatar       String?  // Profile picture URL
   
+  // Invitation flow
+  invitedBy    String?  // ID of teacher who invited this user
+  inviteToken  String?  // Token used for invitation verification
+  isInvited    Boolean  @default(false) // Whether user was invited (vs self-registered)
+  
   // Timestamps
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -42,6 +47,9 @@ model User {
   // Teacher relations
   createdCourses    Course[]        @relation("CourseCreator")
   courseAssistants CourseAssistant[]
+  
+  // Invitation relations
+  sentInvitations   Invitation[]    @relation("InvitationSender")
   
   // Student relations
   enrollments       Enrollment[]
@@ -68,26 +76,58 @@ enum ROLE {
 }
 
 // ============================================================================
+// INVITATION SYSTEM
+// ============================================================================
+
+model Invitation {
+  id          String   @id @map("_id") @default(uuid())
+  email       String
+  role        ROLE     @default(ASSISTANT)
+  token       String   @unique // Unique invitation token
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  usedAt      DateTime?
+  
+  // Invitation details
+  invitedBy   String   // Teacher ID who sent the invitation
+  courseId    String?  // Optional: specific course they're being invited to
+  permissions String[] // Default permissions for the assistant
+  message     String?  // Optional personal message from teacher
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  sender      User     @relation("InvitationSender", fields: [invitedBy], references: [id])
+  course      Course?  @relation(fields: [courseId], references: [id])
+  
+  @@map("invitations")
+}
+
+// ============================================================================
 // COURSE MANAGEMENT
 // ============================================================================
 
 model Course {
   id          String   @id @map("_id") @default(uuid())
-  title       String
-  description String
-  grade       String // e.g., "3rd Secondary", required
+  title       String   @default("Course Title")
+  description String   @default("Course Description")
+  grade       String? // e.g., "3rd Secondary", required
   thumbnail   String?  // Image URL
   price       Float    @default(0)
-  visibility  VISIBILITY @default(PRIVATE)
+  state  COURSE_STATE @default(DRAFT)
   
-  // Course settings
-  timelineEnabled Boolean @default(false)
-  allowEnrollment Boolean @default(true)
-  maxStudents     Int?
+  // denormalizes  stats 
+  totalDuration Int   @default(0)
+  totalLessons  Int  @default(0)
+  totalEnrollments Int  @default(0)
   
+
   // Timestamps
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  publishAt   DateTime?
   deletedAt   DateTime?
   
   // Relations
@@ -100,14 +140,15 @@ model Course {
   quizzes     Quiz[]
   assignments Assignment[]
   announcements Announcement[]
+  invitations Invitation[]
   
   @@map("courses")
 }
 
-enum VISIBILITY {
-  PUBLIC
-  PRIVATE
-  UNLISTED
+enum COURSE_STATE {
+  PUBLIC  
+  DRAFT   
+  READY
 }
 
 // ============================================================================
@@ -194,7 +235,6 @@ enum RESOURCE_TYPE {
   IMAGE
   DOCUMENT
   LINK
-  AUDIO
 }
 
 // ============================================================================
@@ -230,6 +270,7 @@ model Quiz {
 enum QUIZ_TYPE {
   MANUAL
   AUTO
+  GEN_AI
 }
 
 model Question {
