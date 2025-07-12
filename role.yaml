@@ -10,13 +10,13 @@ project_description: |
   - Collect payments (Stripe, Fawry, Vodafone Cash)
   - Automate repetitive tasks like notifications and grading
 
-  🏠 1. Dashboard Overview
-  - Total number of students
-  - Active students today
-  - This month's revenue
-  - Recent submissions (latest 5)
-  - Low-performing students (auto-detected)
-  - Quick announcement sender
+  🏠 1. Home Page (Conditional Rendering)
+  - **Guest Users**: Landing page with CTAs, features, testimonials, pricing
+  - **Logged-in Students**: Personalized dashboard with enrolled courses, progress, recent activity
+  - **Teachers**: Redirected to teacher dashboard (no home page access)
+  - **Course Discovery**: Course cards by grade/subject directly on home page
+  - **Search**: Global search bar for finding courses and content
+  - **Minimalist Approach**: Single page hub instead of multiple course pages
 
   📚 2. Courses & Lectures
   - Courses: title, description, thumbnail, tags (grade, term), price
@@ -124,8 +124,14 @@ student_functional_requirements:
   - "Log in securely using email/password."
   - "View and edit personal profile (name, email, phone number, grade)."
   - "Change password."
-  - "📚 2. Course Access & Learning"
-  - "View list of available courses (free/paid)."
+  - "🏠 2. Home Page Experience"
+  - "View personalized dashboard when logged in (enrolled courses, progress, recent activity)."
+  - "See course cards organized by grade/subject directly on home page."
+  - "Use global search to find courses and content."
+  - "View 'Continue your lesson' with progress bar for latest course."
+  - "Access quick actions (view assignments, take quizzes, etc.)."
+  - "📚 3. Course Access & Learning"
+  - "View list of available courses (free/paid) directly on home page."
   - "Enroll in free or paid courses (based on teacher's settings)."
   - "View enrolled courses with:"
   - "  - Course progress tracker (% complete)."
@@ -133,32 +139,32 @@ student_functional_requirements:
   - "  - View/download lecture attachments (PDFs, images, etc.)."
   - "  - Navigate between lectures, parts (e.g., Part 1, Q&A)."
   - "  - Blocked next lecture if previous assignment/quiz is required."
-  - "🎥 3. Lecture Player"
+  - "🎥 4. Lecture Player"
   - "Stream video content."
   - "Resume playback from where left off."
   - "Download attachments."
   - "View teacher notes or description."
-  - "📤 4. Assignments"
+  - "📤 5. Assignments"
   - "View list of assignments per course or lecture."
   - "Upload assignment files (PDF, Word, images)."
   - "Add text/comment with submission."
   - "View submission status: Pending, Graded, Rejected, Late."
   - "View feedback/grades from the teacher."
   - "Re-submit if allowed."
-  - "🧠 5. Quizzes & Practice Tests"
+  - "🧠 6. Quizzes & Practice Tests"
   - "Take quizzes linked to lectures or courses."
   - "Answer different question types (MCQ, true/false, short answer)."
   - "Get instant result (if enabled)."
   - "View past quiz scores and feedback."
   - "Retake quiz if allowed."
-  - "🧾 6. Progress Tracking"
+  - "🧾 7. Progress Tracking"
   - "Dashboard showing:"
   - "  - Enrolled courses"
   - "  - Overall completion %"
   - "  - Assignments due/overdue"
   - "  - Quiz performance"
   - "Alerts on pending tasks or low performance."
-  - "📩 7. Notifications & Communication"
+  - "📩 8. Notifications & Communication"
   - "Receive notifications for:"
   - "  - New lectures"
   - "  - Assignment deadlines"
@@ -167,7 +173,7 @@ student_functional_requirements:
   - "View notification history."
   - "Receive bulk announcements from teacher."
   - "Optional: contact teacher via message (if enabled)."
-  - "💳 8. Payments & Subscriptions"
+  - "💳 9. Payments & Subscriptions"
   - "View pricing for courses."
   - "Pay using Stripe, Fawry, or Vodafone Cash."
   - "View payment status (paid, pending, expired)."
@@ -175,43 +181,46 @@ student_functional_requirements:
   - "Get blocked if payment expires."
 
 teacher_functional_requirements:
-  - "📚 1. Course Management"
+  - "🚫 1. Access Control"
+  - "No access to home page - redirected to teacher dashboard."
+  - "Dashboard-only interface for all teacher activities."
+  - "📚 2. Course Management"
   - "Create new courses (title, description, syllabus, media)"
   - "Edit course content (update videos, lectures, notes, quizzes)"
   - "Delete/archive courses"
   - "Set course visibility (public/private/unlisted)"
   - "Schedule course availability"
-  - "📝 2. Lesson & Content Authoring"
+  - "📝 3. Lesson & Content Authoring"
   - "Upload lecture videos or documents"
   - "Create modules or units (group lessons)"
   - "Add resources (PDFs, slides, links)"
   - "Embed external tools or media (YouTube, CodeSandbox, etc.)"
-  - "📋 3. Assignment & Quiz Management"
+  - "📋 4. Assignment & Quiz Management"
   - "Create assignments with deadlines and instructions"
   - "Upload starter code or supporting material"
   - "Build quizzes (MCQs, True/False, etc.)"
   - "Set time limits, attempt limits, grading rules"
   - "View submissions and grades"
-  - "📊 4. Grading & Feedback"
+  - "📊 5. Grading & Feedback"
   - "Grade submissions manually or with rubric"
   - "Add comments or annotations to student work"
   - "Track grading status"
   - "Download/export grades (CSV, Excel)"
-  - "👥 5. Student Monitoring"
+  - "👥 6. Student Monitoring"
   - "View enrolled students"
   - "Track student activity (minutes watched, quiz attempts, completion %)"
   - "Identify inactive or struggling students"
   - "Send messages or reminders"
-  - "💬 6. Communication"
+  - "💬 7. Communication"
   - "Post announcements to course"
   - "Open discussion forums"
   - "Answer student questions"
   - "Enable/disable commenting per lesson"
-  - "📈 7. Analytics"
+  - "📈 8. Analytics"
   - "View stats per course (enrollment, engagement, avg. scores)"
   - "Identify drop-off points in lessons"
   - "Filter analytics by time range, cohort, etc."
-  - "⚙️ 8. Settings & Roles"
+  - "⚙️ 9. Settings & Roles"
   - "Assign co-teachers or assistants"
   - "Customize course landing page"
   - "Control access (invite-only, require approval, etc.)"
@@ -350,8 +359,7 @@ current_project_structure:
         auth/ - Authentication pages (login, register, forgot password)
         student/ - Student dashboard and learning interface
         teacher/ - Teacher dashboard and course management
-        courses/ - Public course browsing and enrollment
-        page.tsx - Landing page
+        page.tsx - Landing page (conditional rendering based on user role)
         layout.tsx - Root layout
         globals.css - Global styles
       components:
@@ -360,7 +368,7 @@ current_project_structure:
         student/ - Student-specific components (CourseCard, RecentAssignments, etc.)
         teacher/ - Teacher-specific components (course creation, management)
         dashboard/ - Shared dashboard components
-        home/ - Landing page components
+        home/ - Landing page components (guest view + student dashboard)
         auth/ - Authentication components
       assets/ - Static assets (images, icons)
       hooks/ - Custom React hooks (useDebounce, useSearch, etc.)
@@ -395,11 +403,15 @@ implementation_status:
       - "✅ Course preview functionality"
       - "✅ Multi-step form navigation"
       - "✅ Internationalization setup (next-intl)"
+      - "✅ Home page with conditional rendering (guest vs logged-in)"
+      - "✅ Welcome section with user info and 'Continue your lesson'"
+      - "✅ Progress tracking with visual progress bars"
     in_progress:
       - "🔄 Teacher course management interface"
       - "🔄 Student course enrollment flow"
       - "🔄 Authentication system"
       - "🔄 File upload integration"
+      - "🔄 Course cards by grade/subject on home page"
     pending:
       - "⏳ Payment integration"
       - "⏳ Real-time notifications"
@@ -408,6 +420,7 @@ implementation_status:
       - "⏳ Assignment submission system"
       - "⏳ Quiz taking interface"
       - "⏳ Communication system"
+      - "⏳ Teacher redirect from home page"
 
   backend:
     completed:
@@ -434,11 +447,13 @@ development_priorities:
     - "✅ Create basic teacher dashboard"
     - "✅ Set up database schema"
     - "🔄 Implement course creation backend"
+    - "🔄 Complete home page conditional rendering"
   phase_2:
     - "🔄 Course management system"
     - "🔄 Content authoring tools"
     - "🔄 Assignment and quiz creation"
     - "🔄 File upload system"
+    - "🔄 Course cards and search on home page"
   phase_3:
     - "⏳ Grading and feedback system"
     - "⏳ Student monitoring"
@@ -451,6 +466,14 @@ development_priorities:
     - "⏳ Testing and deployment"
 
 key_features_implemented:
+  home_page_conditional_rendering:
+    - "Guest view: Landing page with CTAs, features, testimonials"
+    - "Student view: Personalized dashboard with enrolled courses"
+    - "Teacher view: Redirected to dashboard (no home access)"
+    - "Welcome section with user info and 'Continue your lesson'"
+    - "Progress tracking with visual progress bars"
+    - "Course discovery by grade/subject (planned)"
+
   course_creation:
     - "5-step wizard interface"
     - "Course information form"
@@ -490,18 +513,33 @@ key_features_implemented:
 
 next_steps:
   immediate:
+    - "Complete home page conditional rendering"
+    - "Add course cards by grade/subject to home page"
+    - "Implement teacher redirect from home page"
     - "Connect frontend to backend APIs"
     - "Implement authentication system"
+  short_term:
     - "Set up database and ORM"
     - "Complete file upload functionality"
     - "Build student course enrollment flow"
-  short_term:
     - "Implement assignment submission system"
+  long_term:
     - "Create quiz taking interface"
     - "Add real-time notifications"
     - "Set up payment processing"
-  long_term:
     - "Add analytics and reporting"
-    - "Implement AI features"
-    - "Mobile app development"
-    - "Performance optimization"
+
+minimalist_approach:
+  description: "Single-page hub design for better usability and reduced complexity"
+  benefits:
+    - "Reduced navigation complexity"
+    - "Faster user onboarding"
+    - "Better content discovery"
+    - "Simplified maintenance"
+    - "Improved user experience"
+  implementation:
+    - "Home page serves as main hub for all student activities"
+    - "Conditional rendering based on authentication status"
+    - "Course discovery integrated into home page"
+    - "Global search accessible from anywhere"
+    - "Teacher dashboard-only access for educators"
