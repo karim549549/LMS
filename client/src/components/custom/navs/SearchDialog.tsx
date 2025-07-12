@@ -95,18 +95,18 @@ export default function SearchDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Button with animated width */}
-      <div className="inline-block group transition-all duration-300">
+      <div className="inline-block group min-w-[16rem]  transition-all duration-300">
         <DialogTrigger asChild>
           <button
             type="button"
-            className="w-[300px] group-hover:w-[350px] justify-between transition-all duration-300 flex items-center gap-2 px-4 py-2 text-sm border border-neutral-300 rounded-full text-neutral-600 hover:text-neutral-800 bg-white shadow-sm overflow-hidden"
+            className="cursor-pointer  w-full justify-between transition-all duration-300 flex items-center gap-2 px-4 py-1 text-sm border border-neutral-300 rounded-md text-neutral-600 hover:text-neutral-800 bg-neutral-100 shadow-sm overflow-hidden"
             aria-label="Open search dialog"
           >
-          <div className="flex items-center gap-2 ">
+          <div className="flex items-center bg-transparent gap-2 ">
             <Search className="text-neutral-500 w-4 h-4" />
-            <span className="truncate">Search for anything...</span>
+            <span className="text-xs">Search for anything...</span>
           </div>
-            <kbd className="bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded px-2 py-1 text-xs text-neutral-500">
+            <kbd className="bg-neutral-200 hover:bg-neutral-200 border border-neutral-300 rounded px-2 py-1  text-[10px] text-neutral-500">
               Ctrl + K
             </kbd>
           </button>

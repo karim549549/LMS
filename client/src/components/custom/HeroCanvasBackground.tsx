@@ -71,7 +71,7 @@ export default function HeroCanvasBackground() {
   }, []);
 
   return (
-    <div ref={parentRef} className="absolute inset-0 w-full h-full z-0 pointer-events-none select-none">
+    <div ref={parentRef} className="absolute  inset-0 w-full h-full z-0 pointer-events-none select-none">
       <canvas
         ref={canvasRef}
         className="w-full h-full"

@@ -16,10 +16,10 @@ export default function LanguageToggle() {
     <div
       className="flex items-center gap-1"
     >
-      <Languages className="w-4 h-4 text-gray-500" />
-      <Select value={value} onValueChange={setValue}>
-        <SelectTrigger className={cn("w-20 h-7 px-2 py-1 text-xs")}> 
-          <SelectValue />
+      <Select  value={value} onValueChange={setValue}>
+        <SelectTrigger className={cn(" flex items-center justify-center bg-transparent border-1 shadow-none hover:bg-blue-50 transition rounded-md ")}> 
+          <SelectValue className="sr-only hidden" />
+          <Languages className="w-5 h-5 text-gray-500" />
         </SelectTrigger>
         <SelectContent>
           {languages.map((lang) => (

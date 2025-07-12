@@ -3,6 +3,7 @@ export type User = {
   id: string;
   role: string;
   isProfileCompleted: boolean;
+  name:string
 };
 
 export type AuthApiResponse = {

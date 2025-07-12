@@ -7,7 +7,7 @@ import CoursesSection from '@/components/student/CoursesSection'
 import RecentAssignments from '@/components/student/RecentAssignments'
 import Container from '@/components/custom/Container'
 import Logo from '@/components/custom/Logo'
-import SearchDialog from '@/components/custom/SearchDialog'
+import SearchDialog from '@/components/custom/navs/SearchDialog'
 import UserAvatar from '@/components/custom/UserAvatar'
 
 // Mock data for demonstration
