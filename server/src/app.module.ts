@@ -27,13 +27,26 @@ import * as redisStore from 'cache-manager-redis-store';
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: (await import('cache-manager-redis-store')).default,
-        socket: {
-          host: configService.get<string>('REDIS_HOST'),
-          port: configService.get<number>('REDIS_PORT'),
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('REDIS_URL');
+        
+        if (redisUrl) {
+          // Use REDIS_URL (for Railway/production)
+          return {
+            store: (await import('cache-manager-redis-store')).default,
+            url: redisUrl,
+          };
+        } else {
+          // Use REDIS_HOST and REDIS_PORT (for local development)
+          return {
+            store: (await import('cache-manager-redis-store')).default,
+            socket: {
+              host: configService.get<string>('REDIS_HOST'),
+              port: configService.get<number>('REDIS_PORT'),
+            },
+          };
+        }
+      },
     }),
     CourseModule,
     BlobModule,
