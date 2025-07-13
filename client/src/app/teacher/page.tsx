@@ -1,6 +1,7 @@
-import TeacherCourseSection from '@/components/teacher/TeacherCourseSection';
+import TeacherCourseCardComponent, { TeacherCourseCardProps } from '@/components/teacher/TeacherCourseCard';
+import TeacherCourseFilterBar from '@/components/teacher/TeacherCourseFilterBar';
+import CreateCourseButton from '@/components/teacher/CreateCourseButton';
 import { courseApis } from '@/services/apis/courseApi';
-import { TeacherCourseCardProps } from '@/components/teacher/TeacherCourseCard';
 import { cookies } from 'next/headers';
 
 interface TeacherPageProps {
@@ -9,14 +10,14 @@ interface TeacherPageProps {
 
 export default async function TeacherPage({ searchParams }: TeacherPageProps) {
   const cookieStore = await cookies();
-  const cookie = cookieStore.toString();
+  const cookie = cookieStore.toString(); 
 
-  // Await searchParams for Next.js dynamic API compliance
   const resolvedSearchParams = await searchParams;
 
   let courses: TeacherCourseCardProps[] = [];
   let error: string | null = null;
   const loading = false;
+  
   try {
     const res = await courseApis.getTeacherCourses(resolvedSearchParams, cookie);
     if (res.error) {
@@ -27,5 +28,29 @@ export default async function TeacherPage({ searchParams }: TeacherPageProps) {
   } catch {
     error = 'Failed to fetch courses.';
   }
-  return <TeacherCourseSection courses={courses} error={error} loading={loading} initialFilters={resolvedSearchParams} />;
+
+  return (
+    <section className="flex flex-col gap-8 p-5 md:p-10">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 className="text-3xl font-black">Courses</h1>
+        <CreateCourseButton />
+      </div>
+      {/* Filter/Search Bar */}
+      <TeacherCourseFilterBar initialFilters={resolvedSearchParams} />
+      {/* Courses List */}
+      <div className="flex flex-col max-w-7xl gap-6">
+        {loading ? (
+          <div className="col-span-full text-center text-gray-400 py-10">Loading courses...</div>
+        ) : error ? (
+          <div className="col-span-full text-center text-red-500 py-10">{error}</div>
+        ) : courses.length === 0 ? (
+          <div className="col-span-full text-center text-gray-400 py-10">No courses found.</div>
+        ) : (
+          courses.map(course => (
+            <TeacherCourseCardComponent key={course.id} {...course} />
+          ))
+        )}
+      </div>
+    </section>
+  );
 }

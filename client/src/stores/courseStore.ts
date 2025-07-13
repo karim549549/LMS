@@ -1,70 +1,80 @@
 import { create } from 'zustand';
-import type { CourseEditManageView } from '@/types/course/CourseEditManageView';
 import { z } from 'zod';
+import type { CourseEditManageView } from '@/types/course/CourseEditManageView';
 
-export type CourseEditForm = {
+// Form state we want to watch
+export type CourseInfoWatchedForm = {
   title: string;
   description: string;
   grade: string | null;
   price: number;
-  state: 'DRAFT' | 'PUBLIC' | 'READY';
-  thumbnail: File | string | null;
+  state?: string; // Make state optional
 };
 
+// Unwatched values (like thumbnail)
+export type CourseThumbnail = File | string | null;
 export type CourseStaff = CourseEditManageView['courseAssistants'];
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
-export type CourseEditState = {
-  form: CourseEditForm;
-  thumbnailPreview: string | null;
-  uploadProgress: number;
-  saveStatus: 'idle' | 'saving' | 'saved' | 'error';
-  lastSaved: CourseEditForm | null;
-  staff: CourseStaff;
-  // Actions
-  setForm: (form: Partial<CourseEditForm>) => void;
-  setThumbnailPreview: (preview: string | null) => void;
-  setUploadProgress: (progress: number) => void;
-  setSaveStatus: (status: 'idle' | 'saving' | 'saved' | 'error') => void;
-  setLastSaved: (form: CourseEditForm | null) => void;
-  setStaff: (staff: CourseStaff) => void;
-  reset: (initial: CourseEditManageView) => void;
-};
-
-export type CourseEditValidation = {
-  success: boolean;
-  errors: Record<string, string>;
-};
-
-// Add zod schema for validation
-export const courseEditSchema = z.object({
+// Zod schema for just the watched part
+export const courseInfoSchema = z.object({
   title: z.string().min(2).max(100),
   description: z.string().min(2).max(1000),
   grade: z.string().nullable(),
   price: z.number().min(0),
   state: z.enum(['DRAFT', 'PUBLIC', 'READY']),
-  thumbnail: z.any().optional(), // file or string
 });
 
-export const useCourseStore = create<CourseEditState & { validateForm: () => CourseEditValidation }>((set, get) => ({
+type CourseEditStore = {
+  form: CourseInfoWatchedForm;
+  saveStatus: SaveStatus;
+  lastSaved: CourseInfoWatchedForm | null;
+
+  thumbnail: CourseThumbnail;
+  staff: CourseStaff;
+  
+  setForm: (form: Partial<CourseInfoWatchedForm>) => void;
+  setSaveStatus: (status: SaveStatus) => void;
+  setLastSaved: (form: CourseInfoWatchedForm | null) => void;
+  validate: () => { success: boolean; errors: Record<string, string> };
+
+  setThumbnail: (thumbnail: CourseThumbnail) => void;
+  setStaff: (staff: CourseStaff) => void;
+  reset: (initial: CourseEditManageView) => void;
+};
+
+export const useCourseStore = create<CourseEditStore>((set, get) => ({
   form: {
     title: '',
     description: '',
     grade: '',
     price: 0,
     state: 'DRAFT',
-    thumbnail: null,
   },
-  thumbnailPreview: null,
-  uploadProgress: 0,
   saveStatus: 'idle',
   lastSaved: null,
+  thumbnail: null,
   staff: [],
+
   setForm: (form) => set((state) => ({ form: { ...state.form, ...form } })),
-  setThumbnailPreview: (preview) => set({ thumbnailPreview: preview }),
-  setUploadProgress: (progress) => set({ uploadProgress: progress }),
   setSaveStatus: (status) => set({ saveStatus: status }),
   setLastSaved: (form) => set({ lastSaved: form }),
+
+  validate: () => {
+    const result = courseInfoSchema.safeParse(get().form);
+    if (result.success) {
+      return { success: true, errors: {} };
+    }
+    const errors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      errors[issue.path[0] as string] = issue.message;
+    }
+    return { success: false, errors };
+  },
+
+  setThumbnail: (thumbnail) => set({ thumbnail }),
   setStaff: (staff) => set({ staff }),
+
   reset: (initial) => set({
     form: {
       title: initial.title ?? '',
@@ -72,24 +82,10 @@ export const useCourseStore = create<CourseEditState & { validateForm: () => Cou
       grade: initial.grade ?? '',
       price: initial.price ?? 0,
       state: initial.state ?? 'DRAFT',
-      thumbnail: initial.thumbnail ?? null,
     },
-    thumbnailPreview: initial.thumbnail ?? null,
-    uploadProgress: 0,
     saveStatus: 'idle',
     lastSaved: null,
+    thumbnail: initial.thumbnail ?? null,
     staff: initial.courseAssistants ?? [],
   }),
-  validateForm: () => {
-    const result = courseEditSchema.safeParse(get().form);
-    if (result.success) {
-      return { success: true, errors: {} };
-    } else {
-      const errors: Record<string, string> = {};
-      for (const issue of result.error.issues) {
-        errors[issue.path[0] as string] = issue.message;
-      }
-      return { success: false, errors };
-    }
-  },
-})); 
+}));

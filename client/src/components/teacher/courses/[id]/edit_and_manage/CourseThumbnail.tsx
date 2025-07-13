@@ -1,40 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCourseStore } from '@/stores/courseStore';
 import { Image as ImageIcon, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Progress } from '@/components/ui/progress';
+import { courseApis } from '@/services/apis/courseApi';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function CourseThumbnail() {
-  const {
-    thumbnailPreview,
-    uploadProgress,
-    setForm,
-    setThumbnailPreview,
-    setUploadProgress,
-  } = useCourseStore();
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const thumbnail = useCourseStore(state => state.thumbnail);
+  const setThumbnail = useCourseStore(state => state.setThumbnail);
+  const params = useParams();
+  const courseId = params?.id as string;
+
+  useEffect(() => {
+    if (typeof thumbnail === 'string') {
+      setThumbnailPreview(thumbnail);
+    } else if (!thumbnail) {
+      setThumbnailPreview(null);
+    }
+  }, [thumbnail]);
 
   // Handle thumbnail upload
-  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setForm({ thumbnail: file });
+      setThumbnail(file);
       const reader = new FileReader();
       reader.onload = (ev) => {
         setThumbnailPreview(ev.target?.result as string);
       };
       reader.readAsDataURL(file);
-      // Simulate upload progress
-      setUploadProgress(0);
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        setUploadProgress(progress);
-        if (progress >= 100) {
-          clearInterval(interval);
-        }
-      }, 80);
+      setUploadProgress(10);
+      // Upload to backend
+      const { data, error } = await courseApis.updateCourseThumbnail(courseId, file);
+      setUploadProgress(100);
+      if (error) {
+        toast.error('Failed to upload thumbnail. Please try again.');
+      }
+      if (data?.thumbnail) setThumbnail(data.thumbnail);
     }
+  };
+
+  // Handle thumbnail delete
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setThumbnailPreview(null);
+    setThumbnail(null);
+    setUploadProgress(10);
+    const { data, error } = await courseApis.updateCourseThumbnail(courseId, null);
+    setUploadProgress(100);
+    if (error) {
+      toast.error('Failed to remove thumbnail. Please try again.');
+    }
+    if (data?.thumbnail === null) setThumbnail(null);
   };
 
   return (
@@ -56,9 +78,7 @@ export default function CourseThumbnail() {
           </button>
         </motion.div>
         {thumbnailPreview ? (
-          typeof thumbnailPreview === 'string' && thumbnailPreview?.startsWith('data:')
-            ? <Image src={thumbnailPreview || ''} alt="Thumbnail preview" fill className="object-cover w-full h-full rounded-lg" />
-            : <Image src={thumbnailPreview || ''} alt="Thumbnail preview" fill className="object-cover w-full h-full rounded-lg" />
+          <Image src={thumbnailPreview} alt="Thumbnail preview" fill className="object-cover w-full h-full rounded-lg" />
         ) : (
           <span className="text-neutral-400 pl-8 w-full text-center block">No thumbnail. Click to upload.</span>
         )}
@@ -76,11 +96,7 @@ export default function CourseThumbnail() {
         <button
           type="button"
           className="absolute top-2 right-2 bg-white/50 p-2 rounded-md flex items-center justify-center z-30 hover:bg-red-100 transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-          onClick={e => {
-            e.preventDefault();
-            setThumbnailPreview(null);
-            setForm({ thumbnail: undefined });
-          }}
+          onClick={handleDelete}
           tabIndex={0}
         >
           <Trash2 className="w-4 h-4 text-red-500" />

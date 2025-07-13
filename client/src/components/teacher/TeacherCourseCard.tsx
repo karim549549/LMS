@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import FallThumbnail from '@/assets/thumbnailfallback.webp';
 import Link from "next/link";
+
 export interface TeacherCourseCardProps {
   id: string;
   title: string;
@@ -27,23 +28,29 @@ const stateColors: Record<TeacherCourseCardProps['state'], string> = {
 
 export default function TeacherCourseCard(props: TeacherCourseCardProps) {
   return (
-    <Link href={`teacher/courses/${props.id}/edit_and_manage`} className=" cursor-pointer border-1 shadow-lg flex flex-row  border-gray-300 ">
+    <Link 
+      href={`/teacher/courses/${props.id}/edit_and_manage`} 
+      className="cursor-pointer border border-gray-300 shadow-lg flex flex-row hover:shadow-xl transition-shadow duration-200"
+    >
       {/* Thumbnail left */}
-      <div className="flex-shrink-0  h-full flex flex-col">
+      <div className="flex-shrink-0 h-full flex flex-col">
         <div className="flex-1 h-full">
           <Image
             src={props.thumbnail || FallThumbnail}
             alt={props.title}
-            className="object-cover h-full "
+            className="object-cover h-full w-[150px]"
             width={150}
+            height={150}
           />
         </div>
       </div>
       {/* Card content right */}
-      <div className="flex flex-col flex-1 p-5 gap-2 justify-between bg-gradient-to-br  from-white from-[60%] to-cyan-100">
+      <div className="flex flex-col flex-1 p-5 gap-2 justify-between bg-gradient-to-br from-white from-[60%] to-cyan-100">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-lg text-gray-900 truncate">{props.title}</h2>
-          <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${stateColors[props.state]}`}>{props.state}</span>
+          <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${stateColors[props.state]}`}>
+            {props.state}
+          </span>
         </div>
         <div className="text-gray-700 text-sm line-clamp-2">{props.description}</div>
         <div className="flex flex-wrap gap-2 text-xs text-gray-500 mt-1">

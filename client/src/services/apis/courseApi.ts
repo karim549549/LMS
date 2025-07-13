@@ -118,4 +118,45 @@ export const courseApis = {
       };
     }
   },
+  async updateCourseInfo(
+    courseId: string,
+    data: Partial<Pick<TeacherCourseCard, 'title' | 'description' | 'grade' | 'price'>>,
+  ): Promise<{ data: TeacherCourseCard | null; error: string | null }> {
+    try {
+      const res = await fetch(`${BASE_URL}teacher/courseInfo/${courseId}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      return handleApiResponse<TeacherCourseCard>(res);
+    } catch {
+      return {
+        data: null,
+        error: 'Unable to connect. Please try again later.',
+      };
+    }
+  },
+  async updateCourseThumbnail(courseId: string, file: File | null)
+  : Promise<{ data: CourseEditManageView | null; error: string | null }> {
+    try {
+      const formData = new FormData();
+      if (file) {
+        formData.append('thumbnail', file);
+      }
+      const res = await fetch(`${BASE_URL}teacher/courseInfo/${courseId}/thumbnail`, {
+        method: 'PATCH',
+        credentials: 'include',
+        body: formData,
+      });
+      return handleApiResponse<CourseEditManageView>(res);
+    } catch {
+      return {
+        data: null,
+        error: 'Unable to connect. Please try again later.',
+      };
+    }
+  },
 };
