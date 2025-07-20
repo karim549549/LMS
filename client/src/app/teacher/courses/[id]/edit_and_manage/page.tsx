@@ -22,7 +22,7 @@ export default async function EditCoursePage({ params }: EditCoursePageProps) {
   }
 
   const course: CourseEditManageView = data;
-
+  console.log(course);
   return (
     <div className="ml-16">
       <h1 className="text-3xl font-bold mb-6">

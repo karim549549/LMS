@@ -62,4 +62,9 @@ export class TokenFactory {
 
     return payload;
   }
+
+  async createInvitationToken(email: string): Promise<string> {
+    const payload = { email, type: 'invitation' };
+    return this.jwtService.signAsync(payload, { expiresIn: '1d' });
+  }
 } 

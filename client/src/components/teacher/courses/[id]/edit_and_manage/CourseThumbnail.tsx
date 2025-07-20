@@ -8,10 +8,13 @@ import { courseApis } from '@/services/apis/courseApi';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default function CourseThumbnail() {
+interface   CourseThumbnailProps{
+  thumbnail: string | File | null
+}
+
+export default function CourseThumbnail({ thumbnail } : CourseThumbnailProps) {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const thumbnail = useCourseStore(state => state.thumbnail);
   const setThumbnail = useCourseStore(state => state.setThumbnail);
   const params = useParams();
   const courseId = params?.id as string;

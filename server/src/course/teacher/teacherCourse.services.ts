@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { TeacherCourseRepository } from "./repositories/teacherCourser.repo";
 import { TeacherCoursesQueryFilter } from "./dtos/TeacherCourseQueryFilter";
+import { UpdateCourseInfoDto } from "./dtos/UpdateCourseDto";
 import { PaginatedResult } from "y/types";
 import { Course } from "@prisma/client";
 import { CourseEditManageView } from "y/types/courses/CourseEditManageView";
@@ -19,5 +20,18 @@ export  class  TeacherCoursesServices{
         if(!result) 
             throw new NotFoundException('Course Not Found')
         return  result  ;
+    }
+    async updateCourseInfo(teacherId: string, courseId: string, updateData: UpdateCourseInfoDto) 
+        :Promise<{ id: string; title: string; description: string; grade: string | null; price: number }> {
+        const course = await this.teacherCourseRepo.getCourseEditManageData(teacherId, courseId);
+        if (!course) {
+            throw new NotFoundException('Course Not Found');
+        }
+        const updatedCourse = await this.teacherCourseRepo.updateCourseInfo(courseId, updateData);
+        if (!updatedCourse) {
+            throw new NotFoundException('Failed to update course');
+        }
+        
+        return updatedCourse;
     }
 } 

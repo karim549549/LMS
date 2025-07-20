@@ -1,0 +1,33 @@
+<mjml>
+  <mj-body background-color="#f9f9f9">
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" color="#222">You're Invited to Become an Assistant!</mj-text>
+        <mj-text font-size="16px" color="#555">
+          Hello <b>{{recipientEmail}}</b>,
+        </mj-text>
+        <mj-text font-size="16px" color="#555">
+          <span>
+            You have been invited to join our Learning Management System as an <b>Assistant</b>
+            by {{teacherName}}{{#if teacherEmail}} ({{teacherEmail}}){{/if}}.
+          </span>
+        </mj-text>
+        {{#if message}}
+        <mj-text font-size="15px" color="#444" padding-bottom="10px">
+          <i>Personal message from your inviting teacher:</i><br/>
+          <span style="background:#f3f3f3; padding:8px 12px; border-radius:6px; display:inline-block;">{{message}}</span>
+        </mj-text>
+        {{/if}}
+        <mj-button href="{{invitationLink}}" background-color="#007bff" color="#fff" font-size="16px" padding="20px 0">
+          Accept Invitation
+        </mj-button>
+        <mj-text font-size="14px" color="#888" padding-top="10px">
+          This invitation will expire in 7 days. If you did not expect this email, you can safely ignore it.
+        </mj-text>
+        <mj-text font-size="13px" color="#bbb" padding-top="20px">
+          &copy; {{year}} LMS Team
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml> 

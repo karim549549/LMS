@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TeacherCoursesQueryFilter } from "../dtos/TeacherCourseQueryFilter";
+import { UpdateCourseInfoDto } from "../dtos/UpdateCourseDto";
 import { PaginatedResult } from "y/types";
 import { Course } from "@prisma/client";
 import { CourseEditManageView } from "y/types/courses/CourseEditManageView";
-
 
 @Injectable()
 
@@ -137,5 +137,22 @@ export class TeacherCourseRepository{
                 }
             })),
         };
+    }
+
+    async updateCourseInfo(courseId: string, updateData: UpdateCourseInfoDto): Promise<{ id: string; title: string; description: string; grade: string | null; price: number } | null> {
+        // Update the course in the database
+        const updatedCourse = await this.prisma.course.update({
+            where: { id: courseId },
+            data: updateData,
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                grade: true,
+                price: true,
+            }
+        });
+
+        return updatedCourse;
     }
 }
